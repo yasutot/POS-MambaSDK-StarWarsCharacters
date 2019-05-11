@@ -25,7 +25,14 @@
       <CircularProgress height="50" />
     </div>
   {/if}
+  <div class="bottom justify-content">
+    <!-- <div class="justify-content"> -->
+      <Button size="small" disabled="{ !character }">Imprimir</Button>
+      <Button size="small" on:click="getRandomCharacter()" disabled="{ !character }">Novo</Button>
+    <!-- </div> -->
+  </div>
 </div>
+<!-- <Button bottom size="small">asd</Button> -->
 
 <script>
   import axios from 'axios';
@@ -33,6 +40,7 @@
   export default {
     components: {
       AppBarModifier: '@mamba/appbar/Modifier.html',
+      Button: '@mamba/button/Button.html',
       CircularProgress: '@mamba/progress/Circular.html',
     },
     data() {
@@ -45,14 +53,11 @@
     },
     methods: {
       async getRandomCharacter() {
+        this.set({character: null});
         const characterIndex = Math.floor(Math.random() * 87 + 1);
         await axios.get(`https://swapi.co/api/people/${characterIndex}`)
           .then(response => {
-            this.character = Object.assign({
-              vehicles_names: [],
-              homeworld_name: '',
-              starships_names: [],
-            }, response.data);
+            this.character = Object.assign({}, response.data);
           })
           .then(() => this.getResourcesNames(this.character.homeworld))
           .then(res => this.character.homeworld_name = res)
@@ -82,8 +87,8 @@
 
 <style type="text/postcss">
   .character-container {
-    height: calc( 100% - 40px );
-    padding: 0.7em;
+    /* height: calc( 100% - 40px ); */
+    /* padding: 0.7em; */
   }
   .character-card {
     border: 1px solid #4ebf1a;
@@ -103,5 +108,14 @@
     -moz-transform: translateX(-50%) translateY(-50%);
     -webkit-transform: translateX(-50%) translateY(-50%);
     transform: translateX(-50%) translateY(-50%);
+  }
+  .bottom {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+  .justify-content {
+    display: flex;
+    justify-content: space-around;
   }
 </style>
