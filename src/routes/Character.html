@@ -1,10 +1,29 @@
 <AppBarModifier title="Character" />
 
+{#if character != null}
+  {JSON.stringify(character)}
+{/if}
 
 <script>
   export default {
     components: {
-      AppBarModifier: '@mamba/appbar/Modifier.html'
-    }
+      AppBarModifier: '@mamba/appbar/Modifier.html',
+    },
+    data() {
+      return {
+        character: null
+      }
+    },
+    oncreate() {
+      this.getRandomCharacter();
+    },
+    methods: {
+      async getRandomCharacter() {
+        const characterIndex = Math.floor(Math.random() * 87 + 1) - 1;
+        return fetch(`https://swapi.co/api/people/${characterIndex}`)
+          .then(res => res.json())
+          .then(data => this.set({ character: data }));
+      },
+    },
   }
 </script>
