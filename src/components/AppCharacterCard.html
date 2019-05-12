@@ -1,0 +1,76 @@
+<div class="character-card">
+  <div class="character-card-header">
+    <span>{ character.name }</span>
+    <!-- <span class="badge float-right">
+      { character.species.length ? character.species_names.join("/") : "Unknown species" }
+    </span> -->
+    <AppBadge float="right">
+      { character.species.length ? character.species_names.join("/") : "Unknown species" }
+    </AppBadge>
+
+  </div>
+  <div class="character-card-body">
+    <div>
+      Born in { character.homeworld_name + (character.homeworld_name === "unknown" ? " planet" : "") }, {
+      character.birth_year + (character.birth_year === "unknown" ? " year" : "") }
+    </div>
+    <div>Gender: { character.gender }</div>
+    <div>Height: { character.height } cm</div>
+    <div>
+      Mass: { character.mass } { character.mass === 'unknown' ? '' : 'kg' }
+    </div>
+    <div>Skin color: { character.skin_color }</div>
+    <div>Eye color: { character.eye_color }</div>
+    <div>Hair color: { character.hair_color }</div>
+    <div>
+      Starships: { character.starships.length ? character.starships_names.join(',') : "none" }
+    </div>
+    <div>
+      Vehicles: { character.vehicles.length ? character.vehicles_names.join(',') : "none" }
+    </div>
+    <div>
+      Featured in { character.films.length } { character.films.length === 1 ? 'film' : 'films'}
+    </div>
+  </div>
+</div>
+
+<script>
+  export default {
+    components: {
+      AppBadge: './AppBadge.html',
+    },
+    data() {
+      return {
+        character: Object,
+      };
+    },
+    oncreate() {
+      const { character } = this.get();
+      console.log(character);
+    },
+  };
+</script>
+
+<style type="text/postcss">
+  .character-card {
+    border: 1px solid #4ebf1a;
+    border-radius: 3px;
+    height: calc(100% - 0.5em);
+    margin: 0.5em 1em 0;
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+  .character-card-header {
+    padding: 0.5em;
+    background-color: #4ebf1a;
+    display: inline-block;
+    width: 100%;
+  }
+  .character-card-header > span {
+    float: left;
+    padding: 0.2em;
+  }
+  .character-card-body {
+    padding: 0.5em;
+  }
+</style>

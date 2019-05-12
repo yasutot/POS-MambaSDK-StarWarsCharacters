@@ -1,38 +1,44 @@
 <AppBarModifier title="Character" />
 
-<div class="character-container">
-  {#if character}
-    <div class="character-card">
-      <div class="character-card-header">
-        {character.name}
+<div class="container">
+  <section>
+    {#if character}
+    <AppCharacterCard bind:character=character />
+    {:else}
+      <div class="center-content-hv">
+        <CircularProgress height="50" />
       </div>
-      <div class="character-card-body">
-        <div>birth_year: {character.birth_year}</div>
-        <div>species: {character.species_names.join(" / ")}</div>
-        <div>eye_color: {character.eye_color}</div>
-        <div>gender: {character.gender}</div>
-        <div>hair_color: {character.hair_color}</div>
-        <div>height: {character.height}</div>
-        <div>homeworld_name: {character.homeworld_name}</div>
-        <div>mass: {character.mass}</div>
-        <div>skin_color: {character.skin_color}</div>
-        <div>starships: { character.starships.length ? character.starships_names.join(',') : "None" }</div>
-        <div>vehicles: { character.vehicles.length ? character.vehicles_names.join(',') : "None" }</div>
-      </div>
-    </div>
-  {:else}
-    <div class="center-content-hv">
-      <CircularProgress height="50" />
-    </div>
-  {/if}
-  <div class="bottom justify-content">
-    <!-- <div class="justify-content"> -->
-      <Button size="small" disabled="{ !character }">Imprimir</Button>
-      <Button size="small" on:click="getRandomCharacter()" disabled="{ !character }">Novo</Button>
-    <!-- </div> -->
-  </div>
+    {/if}
+</section>
+  <footer class="justify-content-around p-05">
+    <Button
+      size="small"
+      disabled="{ !character }"
+      on:click="refs.printable.print()"
+      shortcut="enter"
+    >
+      Imprimir (Enter)
+    </Button>
+    <Button
+      size="small"
+      on:click="getRandomCharacter()"
+      disabled="{ !character }"
+    >
+      Buscar novamente
+    </Button>
+  </footer>
 </div>
-<!-- <Button bottom size="small">asd</Button> -->
+
+{#if character}
+<AppCharacterCard bind:character=character />
+{/if}
+
+<Printable ref:printable>
+  {#if character}
+    <h1>{ character.name }</h1>
+  {/if}
+</Printable>
+
 
 <script>
   import axios from 'axios';
@@ -40,8 +46,10 @@
   export default {
     components: {
       AppBarModifier: '@mamba/appbar/Modifier.html',
+      AppCharacterCard: '../components/AppCharacterCard.html',
       Button: '@mamba/button/Button.html',
       CircularProgress: '@mamba/progress/Circular.html',
+      Printable: '@mamba/printable',
     },
     data() {
       return {
@@ -53,24 +61,38 @@
     },
     methods: {
       async getRandomCharacter() {
-        this.set({character: null});
+        this.set({ character: null });
         const characterIndex = Math.floor(Math.random() * 87 + 1);
+        console.log(characterIndex);
         await axios.get(`https://swapi.co/api/people/${characterIndex}`)
           .then(response => {
             this.character = Object.assign({}, response.data);
+            this.character.date = Date(Date.now());
           })
-          .then(() => this.getResourcesNames(this.character.homeworld))
-          .then(res => this.character.homeworld_name = res)
-          .then(() => this.getResourcesNames(this.character.species))
-          .then(res => this.character.species_names = res)
-          .then(() => this.getResourcesNames(this.character.starships))
-          .then(res => this.character.starships_names = res)
-          .then(() => this.getResourcesNames(this.character.vehicles))
-          .then(res => this.character.vehicles_names = res)
+          .then(() => this.getResourceNames(this.character.homeworld))
+          .then(res => {
+            this.character.homeworld_name = res;
+          })
+          .then(() => this.getResourceNames(this.character.species))
+          .then(res => {
+            this.character.species_names = res;
+          })
+          .then(() => this.getResourceNames(this.character.starships))
+          .then(res => {
+            this.character.starships_names = res;
+          })
+          .then(() => this.getResourceNames(this.character.vehicles))
+          .then(res => {
+            this.character.vehicles_names = res;
+          })
           .then(() => this.set({ character: this.character }))
-          .then(() => console.log(this.character));
+          .then(() => console.log(this.character))
+          .catch(err => {
+            console.error(err);
+            this.getRandomCharacter();
+          });
       },
-      async getResourcesNames(url) {
+      async getResourceNames(url) {
         if (!url) return;
 
         if (url.constructor === Array) {
@@ -86,36 +108,28 @@
 </script>
 
 <style type="text/postcss">
-  .character-container {
-    /* height: calc( 100% - 40px ); */
-    /* padding: 0.7em; */
-  }
-  .character-card {
-    border: 1px solid #4ebf1a;
-    height: 100%
-  }
-  .character-card-header {
-    padding: 1em;
-    background-color: #4ebf1a;
-  }
-  .character-card-body {
-    padding: 0.5em;
-  }
   .center-content-hv {
     position: absolute;
     top: 50%;
     left: 50%;
-    -moz-transform: translateX(-50%) translateY(-50%);
-    -webkit-transform: translateX(-50%) translateY(-50%);
     transform: translateX(-50%) translateY(-50%);
   }
-  .bottom {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-  }
-  .justify-content {
+  .justify-content-around {
     display: flex;
     justify-content: space-around;
+  }
+  .container {
+    display: flex;
+    flex-flow: column;
+    height: calc(100% - 38px);
+  }
+  .container section {
+    flex: 1 1 auto;
+  }
+  .container footer {
+    flex: 0 1;
+  }
+  .p-05 {
+    padding: 0.5em;
   }
 </style>

@@ -1,0 +1,39 @@
+<span class={ float ? "float-" + float : '' }>
+  <slot></slot>
+</span>
+
+<script>
+  export default {
+    data() {
+      return {
+        float: '',
+      };
+    },
+    oncreate() {
+      const { data } = this.options;
+      this.setFloat(data.float);
+    },
+    methods: {
+      setFloat(pos) {
+        if (pos !== 'right' && pos !== 'left')
+          return;
+
+        this.set({ float: pos });
+      },
+    },
+  };
+</script>
+
+<style type="text/postcss">
+  span {
+    padding: 0.2em 0.5em;
+    background-color: #96e50e;
+    border-radius: 3px;
+  }
+  .float-right {
+    float: right;
+  }
+  .float-left {
+    float: left;
+  }
+</style>
