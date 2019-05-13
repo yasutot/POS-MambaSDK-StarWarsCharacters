@@ -3,13 +3,13 @@
 <div class="container">
   <section>
     {#if character}
-    <AppCharacterCard bind:character=character />
+    <AppCharacterCard bind:character=character/>
     {:else}
       <div class="center-content-hv">
         <CircularProgress height="50" />
       </div>
     {/if}
-</section>
+  </section>
   <footer class="justify-content-around p-05">
     <Button
       size="small"
@@ -17,37 +17,51 @@
       on:click="refs.printable.print()"
       shortcut="enter"
     >
-      Imprimir (Enter)
+      Print (Enter)
     </Button>
     <Button
       size="small"
       on:click="getRandomCharacter()"
       disabled="{ !character }"
     >
-      Buscar novamente
+      Search again
     </Button>
   </footer>
 </div>
 
-{#if character}
-<AppCharacterCard bind:character=character />
-{/if}
-
 <Printable ref:printable>
   {#if character}
-    <h1>{ character.name }</h1>
+    <h1><strong>{ character.name }</strong></h1>
+    <div><strong>Gender: </strong>{ character.gender }</div>
+    <div>
+      <strong>Homeworld: </strong>
+      { character.homeworld_name + (character.homeworld_name === "unknown" ? " planet" : "") }
+    </div>
+    <div>
+      <strong>Species: </strong>
+      { character.species.length ? character.species_names.join("/") : "Unknown species" }
+    </div>
+    <div><strong>Height: </strong>{ character.height } cm</div>
+    <div><strong>Mass: </strong>{ character.mass } { character.mass === 'unknown' ? '' : 'kg' }</div>
+    <div><strong>Skin color: </strong>{ character.skin_color }</div>
+    <div><strong>Eye color: </strong>{ character.eye_color }</div>
+    <div><strong>Hair color: </strong>{ character.hair_color }</div>
+    <div><strong>Starships: </strong>{ character.starships.length ? character.starships_names.join(',') : "none" }</div>
+    <div><strong>Vehicles: </strong>{ character.vehicles.length ? character.vehicles_names.join(',') : "none" }</div>
+    <div><strong>Films: </strong>{ character.films.length ? character.films_names.join(',') : "none" }</div>
   {/if}
 </Printable>
 
-
 <script>
   import axios from 'axios';
+  import moment from 'moment';
+  import Storage from '@mamba/pos/api/storage.js';
 
   export default {
     components: {
       AppBarModifier: '@mamba/appbar/Modifier.html',
       AppCharacterCard: '../components/AppCharacterCard.html',
-      Button: '@mamba/button/Button.html',
+      Button: '@mamba/button',
       CircularProgress: '@mamba/progress/Circular.html',
       Printable: '@mamba/printable',
     },
@@ -63,34 +77,39 @@
       async getRandomCharacter() {
         this.set({ character: null });
         const characterIndex = Math.floor(Math.random() * 87 + 1);
-        console.log(characterIndex);
         await axios.get(`https://swapi.co/api/people/${characterIndex}`)
           .then(response => {
             this.character = Object.assign({}, response.data);
-            this.character.date = Date(Date.now());
           })
           .then(() => this.getResourceNames(this.character.homeworld))
-          .then(res => {
-            this.character.homeworld_name = res;
-          })
+          .then(res => { this.character.homeworld_name = res; })
           .then(() => this.getResourceNames(this.character.species))
-          .then(res => {
-            this.character.species_names = res;
-          })
+          .then(res => { this.character.species_names = res; })
           .then(() => this.getResourceNames(this.character.starships))
-          .then(res => {
-            this.character.starships_names = res;
-          })
+          .then(res => { this.character.starships_names = res; })
           .then(() => this.getResourceNames(this.character.vehicles))
-          .then(res => {
-            this.character.vehicles_names = res;
-          })
-          .then(() => this.set({ character: this.character }))
-          .then(() => console.log(this.character))
+          .then(res => { this.character.vehicles_names = res; })
+          .then(() => this.getResourceNames(this.character.films))
+          .then(res => { this.character.films_names = res; })
+          .then(() => this.saveCharacter())
+          .then(() => this.setCharacter())
           .catch(err => {
             console.error(err);
             this.getRandomCharacter();
           });
+      },
+      saveCharacter() {
+        this.character.date = moment().format('MM/DD/YYYY HH:mm:ss');
+
+        if (!Storage.getItem('characters')) {
+          Storage.setItem('characters', [this.character]);
+        } else {
+          const consultedCharacters = Storage.getItem('characters');
+          Storage.setItem('characters', [...consultedCharacters, this.character]);
+        }
+      },
+      setCharacter() {
+        this.set({ character: this.character });
       },
       async getResourceNames(url) {
         if (!url) return;
@@ -98,7 +117,9 @@
         if (url.constructor === Array) {
           const promises = url.map(el => axios.get(el));
           return axios.all(promises)
-            .then(responses => responses.map(response => response.data.name));
+            .then(responses => responses.map(
+              response => response.data.name || response.data.title,
+            ));
         }
 
         return axios.get(url).then(response => response.data.name);

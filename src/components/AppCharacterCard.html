@@ -1,36 +1,36 @@
 <div class="character-card">
   <div class="character-card-header">
     <span>{ character.name }</span>
-    <!-- <span class="badge float-right">
-      { character.species.length ? character.species_names.join("/") : "Unknown species" }
-    </span> -->
     <AppBadge float="right">
       { character.species.length ? character.species_names.join("/") : "Unknown species" }
     </AppBadge>
-
   </div>
   <div class="character-card-body">
     <div>
-      Born in { character.homeworld_name + (character.homeworld_name === "unknown" ? " planet" : "") }, {
-      character.birth_year + (character.birth_year === "unknown" ? " year" : "") }
+      <strong>
+        Born in { character.homeworld_name + (character.homeworld_name === "unknown" ? " planet" : "") }, {
+        character.birth_year + (character.birth_year === "unknown" ? " year" : "") }
+      </strong>
     </div>
-    <div>Gender: { character.gender }</div>
-    <div>Height: { character.height } cm</div>
+    <div><strong>Gender: </strong>{ character.gender }</div>
+    <div><strong>Height: </strong>{ character.height } { character.height === 'unknown' ? '' : 'cm' }</div>
     <div>
-      Mass: { character.mass } { character.mass === 'unknown' ? '' : 'kg' }
+      <strong>Mass: </strong>{ character.mass } { character.mass === 'unknown' ? '' : 'kg' }
     </div>
-    <div>Skin color: { character.skin_color }</div>
-    <div>Eye color: { character.eye_color }</div>
-    <div>Hair color: { character.hair_color }</div>
+    <div><strong>Eye color: </strong>{ character.eye_color }</div>
+    <div><strong>Hair color: </strong>{ character.hair_color }</div>
     <div>
-      Starships: { character.starships.length ? character.starships_names.join(',') : "none" }
-    </div>
-    <div>
-      Vehicles: { character.vehicles.length ? character.vehicles_names.join(',') : "none" }
+      <strong>Starships: </strong>{ character.starships.length ? character.starships_names.join(',') : "none" }
     </div>
     <div>
-      Featured in { character.films.length } { character.films.length === 1 ? 'film' : 'films'}
+      <strong>Vehicles: </strong>{ character.vehicles.length ? character.vehicles_names.join(',') : "none" }
     </div>
+    <div>
+      <strong>Featured in { character.films.length } {pluralizeFilm(character.films.length)}</strong>
+    </div>
+    {#if showDate}
+    <div class="consulting-date">Consulted in {character.date}</div>
+    {/if}
   </div>
 </div>
 
@@ -39,14 +39,20 @@
     components: {
       AppBadge: './AppBadge.html',
     },
+    helpers: {
+      pluralizeFilm(num) {
+        return num === 1 ? 'film' : 'films';
+      },
+    },
     data() {
       return {
         character: Object,
+        showDate: false,
       };
     },
     oncreate() {
-      const { character } = this.get();
-      console.log(character);
+      const { showDate } = this.get();
+      this.set({ showDate });
     },
   };
 </script>
@@ -72,5 +78,10 @@
   }
   .character-card-body {
     padding: 0.5em;
+  }
+  .consulting-date {
+    font-style: italic;
+    font-size: smaller;
+    padding-top: 0.5em;
   }
 </style>

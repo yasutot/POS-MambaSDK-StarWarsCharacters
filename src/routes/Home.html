@@ -1,35 +1,53 @@
 <AppBarModifier title="Home" />
 
-<p>
-  <a href="/character">Character</a>
-</p>
+<div class="container">
+  <section>
+    TODO - Explanations
+  </section>
 
-<Printable ref:printable>
-  Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga unde dicta at quisquam doloremque sunt soluta architecto debitis, sit quidem placeat qui nam expedita quod, mollitia suscipit porro saepe recusandae.
-</Printable>
-
-<Button
-  size="full"
-  bottom
-  on:click="refs.printable.print()"
-  shortcut="enter"
->
-  Imprimir! (press. enter)
-</Button>
+  <footer class="justify-content-around p-05">
+    <a href="/characters">
+      <Button size="small">
+        Consulted Characters
+      </Button>
+    </a>
+    <a href="/character">
+      <Button size="small">Random Character</Button>
+    </a>
+  </footer>
+</div>
 
 <script>
   export default {
     components: {
       AppBarModifier: '@mamba/appbar/Modifier.html',
-      Printable: '@mamba/printable',
       Button: '@mamba/button',
     },
   };
 </script>
 
 <style type="text/postcss">
-  p {
-    padding: 20px;
-    font-size: 22px;
+  .container {
+    display: flex;
+    flex-flow: column;
+    height: calc(100% - 38px);
+  }
+  .justify-content-around {
+    display: flex;
+    justify-content: space-around;
+  }
+  .container {
+    display: flex;
+    flex-flow: column;
+    height: calc(100% - 38px);
+  }
+  .container section {
+    flex: 1 1 auto;
+  }
+  .container footer {
+    flex: 0 1;
+  }
+  .p-05 {
+    padding: 0.5em;
   }
 </style>

@@ -78,6 +78,7 @@
     "@mamba/app": "^2.6.4",
     "@mamba/appbar": "^2.6.4",
     "@mamba/button": "^2.6.4",
+    "@mamba/collection": "^2.7.2",
     "@mamba/dialog": "^2.6.4",
     "@mamba/icon": "^2.6.4",
     "@mamba/pos": "^2.6.4",
@@ -86,6 +87,7 @@
     "@mamba/styles": "^2.6.4",
     "axios": "^0.18.0",
     "immer": "^2.0.0",
+    "moment": "^2.24.0",
     "svelte": "2.16.1",
     "svelte-page": "^2.2.1"
   }
