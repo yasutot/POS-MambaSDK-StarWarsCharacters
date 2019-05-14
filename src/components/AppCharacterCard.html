@@ -1,45 +1,65 @@
 <div class="character-card">
   <div class="character-card-header">
-    <span>{ character.name }</span>
+    <span>{character.name}</span>
     <AppBadge float="right">
       { character.species.length ? character.species_names.join("/") : "Unknown species" }
     </AppBadge>
   </div>
   <div class="character-card-body">
     <div>
-      <strong>
-        Born in { character.homeworld_name + (character.homeworld_name === "unknown" ? " planet" : "") }, {
-        character.birth_year + (character.birth_year === "unknown" ? " year" : "") }
-      </strong>
-    </div>
-    <div><strong>Gender: </strong>{ character.gender }</div>
-    <div><strong>Height: </strong>{ character.height } { character.height === 'unknown' ? '' : 'cm' }</div>
-    <div>
-      <strong>Mass: </strong>{ character.mass } { character.mass === 'unknown' ? '' : 'kg' }
-    </div>
-    <div><strong>Eye color: </strong>{ character.eye_color }</div>
-    <div><strong>Hair color: </strong>{ character.hair_color }</div>
-    <div>
-      <strong>Starships: </strong>{ character.starships.length ? character.starships_names.join(',') : "none" }
+      <span class='bold'>
+        Born in {character.homeworld_name + (character.homeworld_name === "unknown" ? " planet" : "")},
+        {character.birth_year + (character.birth_year === "unknown" ? " year" : "")}
+      </span>
     </div>
     <div>
-      <strong>Vehicles: </strong>{ character.vehicles.length ? character.vehicles_names.join(',') : "none" }
+      <span class='bold'>Gender: </span>
+      <span>{character.gender}</span>
     </div>
     <div>
-      <strong>Featured in { character.films.length } {pluralizeFilm(character.films.length)}</strong>
+      <span class='bold'>Height: </span>
+      <span>{character.height} {character.height === 'unknown' ? '' : 'cm'}</span>
+    </div>
+    <div>
+      <span class='bold'>Mass: </span>
+      <span> {character.mass} {character.mass === 'unknown' ? '' : 'kg'}</span>
+    </div>
+    <div>
+      <span class='bold'>Eye color: </span>
+      <span>{character.eye_color}</span>
+    </div>
+    <div>
+      <span class='bold'>Hair color: </span>
+      <span>{character.hair_color}</span>
+    </div>
+    <div>
+      <span class='bold'>Starships: </span>
+      <span>{character.starships.length ? character.starships_names.join(',') : "none"}</span>
+    </div>
+    <div>
+      <span class='bold'>Vehicles: </span>
+      <span>{character.vehicles.length ? character.vehicles_names.join(',') : "none"}</span>
+    </div>
+    <div>
+      <span class='bold'>Featured in {character.films.length} {pluralizeFilm(character.films.length)}</span>
     </div>
     {#if showDate}
-    <div class="consulting-date">Consulted in {character.date}</div>
+      <div class="consulting-date">Consulted in {formatDate(character.date)}</div>
     {/if}
   </div>
 </div>
 
 <script>
+  import moment from 'moment';
+
   export default {
     components: {
       AppBadge: './AppBadge.html',
     },
     helpers: {
+      formatDate(date) {
+        return moment(date).format('MM/DD/YYYY HH:mm:ss');
+      },
       pluralizeFilm(num) {
         return num === 1 ? 'film' : 'films';
       },
@@ -67,9 +87,11 @@
     margin-right: 1em;
   }
   .character-card-header {
-    padding: 0.5em;
     background-color: #4ebf1a;
+    color: #fff;
     display: inline-block;
+    font-weight: bold;
+    padding: 0.5em;
     width: 100%;
   }
   .character-card-header > span {
@@ -83,5 +105,8 @@
     font-style: italic;
     font-size: smaller;
     padding-top: 0.5em;
+  }
+  .bold {
+    font-weight: bold;
   }
 </style>

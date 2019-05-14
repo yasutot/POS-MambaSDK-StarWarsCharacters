@@ -2,13 +2,27 @@
 
 <div class="container">
   <section>
-    TODO - Explanations
+    <p>
+      Select <span class="highlight">Random Character</span> to go to Character page and display a Star Wars Character
+      data, or <span class="highlight">History</span> to check all the characters you've consulted.
+    </p>
+    <p>
+      In the Character Page you can consult other random characters by selecting <span class=highlight>Search
+        again</span> or <span class=highlight>Print</span> their info.
+    </p>
+    <p>
+      In the History Page, you can check the data of every character you've consulted by selecting its
+      row.
+    </p>
+    <!-- <Button on:click="clear()">clear</Button> -->
+    <!-- <Button on:click="show()">show</Button> -->
+    <!-- <Button on:click="page(1)">show</Button> -->
   </section>
 
   <footer class="justify-content-around p-05">
-    <a href="/characters">
+    <a href="/history">
       <Button size="small">
-        Consulted Characters
+        History
       </Button>
     </a>
     <a href="/character">
@@ -18,10 +32,20 @@
 </div>
 
 <script>
+  import Storage from '@mamba/pos/api/storage.js';
+
   export default {
     components: {
       AppBarModifier: '@mamba/appbar/Modifier.html',
       Button: '@mamba/button',
+    },
+    methods: {
+      clear() {
+        Storage.clear();
+      },
+      show() {
+        console.log(Storage.getItem('characters'));
+      },
     },
   };
 </script>
@@ -43,11 +67,24 @@
   }
   .container section {
     flex: 1 1 auto;
+    padding: 0.5em 1em;
   }
   .container footer {
     flex: 0 1;
   }
   .p-05 {
     padding: 0.5em;
+  }
+  .highlight {
+    color: #44be01;
+    font-weight: bold;
+  }
+  p {
+    line-height: 1.3;
+    margin-bottom: 0.4em;
+    text-align: justify;
+  }
+  p:nth-last-child(1) {
+    margin-bottom: 0;
   }
 </style>
