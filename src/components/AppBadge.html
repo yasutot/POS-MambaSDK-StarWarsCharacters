@@ -14,11 +14,11 @@
       this.setFloat(data.float);
     },
     methods: {
-      setFloat(pos) {
-        if (pos !== 'right' && pos !== 'left')
+      setFloat(position) {
+        if (position !== 'right' && position !== 'left')
           return;
 
-        this.set({ float: pos });
+        this.set({ float: position });
       },
     },
   };

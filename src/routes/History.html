@@ -10,14 +10,20 @@
         size="small"
         on:click="hideCharacter()"
       >
-        Back to characters
+        Back to List
       </Button>
       <Button
         size="small"
+        on:click="refs.printable.print()"
+        shortcut="enter"
       >
         Print (Enter)
       </Button>
     </footer>
+
+    <Printable ref:printable>
+      <AppCharacterPrintTemplate bind:character=character/>
+    </Printable>
   {:else}
     <section>
       <Collection>
@@ -32,12 +38,14 @@
     </section>
     <footer class="justify-content-around">
       <Button
+        size="full"
         disabled="{isPreviousButtonDisabled(page)}"
         on:click="goToPreviousPage()"
       >
         <Icon symbol="chevron-left" color="white" />
       </Button>
       <Button
+        size="full"
         disabled="{isNextButtonDisabled(page, characters, rowsPerPage)}"
         on:click="goToNextPage()"
       >
@@ -55,9 +63,11 @@
     components: {
       AppBarModifier: '@mamba/appbar/Modifier.html',
       AppCharacterCard: '../components/AppCharacterCard.html',
+      AppCharacterPrintTemplate: '../components/AppCharacterPrintTemplate.html',
       Button: '@mamba/button/Button.html',
       Collection: '@mamba/collection/Collection.html',
       Icon: '@mamba/icon',
+      Printable: '@mamba/printable',
       Row: '@mamba/collection/Row.html',
     },
     helpers: {
@@ -102,18 +112,18 @@
         const { rowsPerPage } = this.get();
         if (!characters) return;
 
-        const pageCharacters = characters.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+        const pageCharacters = characters.slice(
+          (page - 1) * rowsPerPage, page * rowsPerPage,
+        );
 
         this.set({ page });
         this.set({ pageCharacters });
       },
       goToNextPage() {
-        // if (!this.hasNextPage()) return;
         const { page } = this.get();
         this.setPage(page + 1);
       },
       goToPreviousPage() {
-        // if (!this.hasPreviousPage()) return;
         const { page } = this.get();
         this.setPage(page - 1);
       },
@@ -122,26 +132,18 @@
 </script>
 
 <style type="text/postcss">
-  .center-content-hv {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-  }
   .justify-content-around {
     display: flex;
     justify-content: space-around;
   }
   .container {
-    /* display: flex; */
-    /* flex-flow: column; */
     height: calc(100% - 38px);
   }
   .container section {
-    /* flex: 1 1 auto; */
+    flex: 1 1 auto;
   }
   .container footer {
-    /* flex: 0 1; */
+    flex: 0 1;
     position: absolute;
     bottom: 0;
     width: 100%;

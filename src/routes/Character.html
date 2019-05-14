@@ -3,7 +3,7 @@
 <div class="container">
   <section>
     {#if character}
-    <AppCharacterCard bind:character=character/>
+      <AppCharacterCard bind:character=character/>
     {:else}
       <div class="center-content-hv">
         <CircularProgress height="50" />
@@ -29,53 +29,49 @@
   </footer>
 </div>
 
+<ConfirmationDialog ref:confirmationDialogLabelled
+  title="ERROR"
+  positiveLabel="Sim"
+  negativeLabel="Não"
+  on:negative="this.root.router.back()"
+  on:positive="getRandomCharacter()"
+>
+  There was an error in the requisiton. Do you wish to try again?
+</ConfirmationDialog>
+
 <Printable ref:printable>
   {#if character}
-    <h1><strong>{ character.name }</strong></h1>
-    <div><strong>Gender: </strong>{ character.gender }</div>
-    <div>
-      <strong>Homeworld: </strong>
-      { character.homeworld_name + (character.homeworld_name === "unknown" ? " planet" : "") }
-    </div>
-    <div>
-      <strong>Species: </strong>
-      { character.species.length ? character.species_names.join("/") : "Unknown species" }
-    </div>
-    <div><strong>Height: </strong>{ character.height } cm</div>
-    <div><strong>Mass: </strong>{ character.mass } { character.mass === 'unknown' ? '' : 'kg' }</div>
-    <div><strong>Skin color: </strong>{ character.skin_color }</div>
-    <div><strong>Eye color: </strong>{ character.eye_color }</div>
-    <div><strong>Hair color: </strong>{ character.hair_color }</div>
-    <div><strong>Starships: </strong>{ character.starships.length ? character.starships_names.join(',') : "none" }</div>
-    <div><strong>Vehicles: </strong>{ character.vehicles.length ? character.vehicles_names.join(',') : "none" }</div>
-    <div><strong>Films: </strong>{ character.films.length ? character.films_names.join(',') : "none" }</div>
+    <AppCharacterPrintTemplate bind:character=character/>
   {/if}
 </Printable>
 
 <script>
   import axios from 'axios';
-  // import moment from 'moment';
+  import moment from 'moment';
   import Storage from '@mamba/pos/api/storage.js';
 
   export default {
     components: {
       AppBarModifier: '@mamba/appbar/Modifier.html',
       AppCharacterCard: '../components/AppCharacterCard.html',
+      AppCharacterPrintTemplate: '../components/AppCharacterPrintTemplate.html',
       Button: '@mamba/button',
+      ConfirmationDialog: '@mamba/dialog/Confirmation.html',
       CircularProgress: '@mamba/progress/Circular.html',
       Printable: '@mamba/printable',
     },
     data() {
       return {
-        character: null,
+        character: undefined,
       };
     },
     oncreate() {
+      this.set({ confirmationDialog: this.refs.confirmationDialogLabelled });
       this.getRandomCharacter();
     },
     methods: {
       async getRandomCharacter() {
-        this.set({ character: null });
+        this.set({ character: undefined });
         const characterIndex = Math.floor(Math.random() * 87 + 1);
         await axios.get(`https://swapi.co/api/people/${characterIndex}`)
           .then(response => {
@@ -95,11 +91,11 @@
           .then(() => this.setCharacter())
           .catch(err => {
             console.error(err);
-            // this.getRandomCharacter();
+            this.get().confirmationDialog.open();
           });
       },
       saveCharacter() {
-        this.character.date = Date(Date.now());
+        this.character.date = moment();
         if (!Storage.getItem('characters')) {
           Storage.setItem('characters', [this.character]);
         } else {

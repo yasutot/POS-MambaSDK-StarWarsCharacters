@@ -79,7 +79,7 @@
     "@mamba/appbar": "^2.6.4",
     "@mamba/button": "^2.6.4",
     "@mamba/collection": "^2.7.2",
-    "@mamba/dialog": "^2.6.4",
+    "@mamba/dialog": "^2.7.2",
     "@mamba/icon": "^2.6.4",
     "@mamba/pos": "^2.6.4",
     "@mamba/printable": "^2.6.4",

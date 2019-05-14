@@ -1,0 +1,77 @@
+<div>
+  <h1 class="bold">{character.name}</h1>
+  <div>
+    <span class='bold'>Gender: </span>
+    <span>{character.gender}</span>
+  </div>
+  <div>
+    <span class='bold'>Homeworld: </span>
+    <span>
+      {character.homeworld_name}
+      {character.homeworld_name === 'unknown' ? ' planet' : ''}
+    </span>
+  </div>
+  <div>
+    <span class='bold'>Species: </span>
+    <span>
+      {character.species.length ? character.species_names.join('/') : 'Unknown species'}
+    </span>
+  </div>
+  <div>
+    <span class='bold'>Height: </span>
+    <span>{character.height} cm</span>
+  </div>
+  <div>
+    <span class='bold'>Mass: </span>
+    <span>
+      {character.mass}
+      {character.mass === 'unknown' ? '' : 'kg'}
+    </span>
+  </div>
+  <div>
+    <span class='bold'>Skin color: </span>
+    <span>{character.skin_color}</span>
+  </div>
+  <div>
+    <span class='bold'>Eye color: </span>
+    <span>{character.eye_color}</span>
+  </div>
+  <div>
+    <span class='bold'>Hair color: </span>
+    <span>{character.hair_color}</span>
+  </div>
+  <div>
+    <span class='bold'>Starships: </span>
+    <span>
+      {character.starships.length ? character.starships_names.join(',') : "none"}
+    </span>
+  </div>
+  <div><span class='bold'>Vehicles: </span>
+    <span>
+      {character.vehicles.length ? character.vehicles_names.join(',') : "none"}
+    </span>
+  </div>
+  <div>
+    <span class='bold'>Films: </span>
+    <span>
+      {character.films.length ? character.films_names.join(',') : "none"}
+    </span>
+  </div>
+</div>
+
+<script>
+  export default {
+    data() {
+      return {
+        character: Object,
+      };
+    },
+  };
+</script>
+
+
+<style type="text/postcss">
+  .bold {
+    font-weight: bold;
+  }
+</style>

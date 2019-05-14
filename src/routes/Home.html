@@ -14,38 +14,23 @@
       In the History Page, you can check the data of every character you've consulted by selecting its
       row.
     </p>
-    <!-- <Button on:click="clear()">clear</Button> -->
-    <!-- <Button on:click="show()">show</Button> -->
-    <!-- <Button on:click="page(1)">show</Button> -->
   </section>
 
   <footer class="justify-content-around p-05">
-    <a href="/history">
-      <Button size="small">
-        History
-      </Button>
-    </a>
-    <a href="/character">
-      <Button size="small">Random Character</Button>
-    </a>
+    <Button size="small" on:click="this.root.router.go('/history')">
+      History
+    </Button>
+    <Button size="small" on:click="this.root.router.go('/character')">
+      Random Character
+    </Button>
   </footer>
 </div>
 
 <script>
-  import Storage from '@mamba/pos/api/storage.js';
-
   export default {
     components: {
       AppBarModifier: '@mamba/appbar/Modifier.html',
       Button: '@mamba/button',
-    },
-    methods: {
-      clear() {
-        Storage.clear();
-      },
-      show() {
-        console.log(Storage.getItem('characters'));
-      },
     },
   };
 </script>
